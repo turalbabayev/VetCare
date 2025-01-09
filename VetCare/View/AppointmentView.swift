@@ -52,13 +52,19 @@ struct AppointmentView: View {
                 let query = "SELECT id, pet_id, appointment_date, description FROM appointments;"
                 let rows = try databaseService.executeQuery(query)
 
-                // Sorgu sonuçlarını işleyin
-                appointments = rows.map { row in
-                    let id = row["id"] as? Int ?? 0
-                    let petId = row["pet_id"] as? Int ?? 0
-                    let appointmentDate = row["appointment_date"] as? String ?? "Unknown"
-                    let description = row["description"] as? String ?? ""
+                // Dönen satırları kontrol edin
+                print("Rows: \(rows)")
 
+                // Satırları işlemeye çalışmadan önce mevcut olup olmadığını kontrol edin
+                appointments = rows.compactMap { row in
+                    guard let id = row["id"] as? Int,
+                          let petId = row["pet_id"] as? Int,
+                          let appointmentDate = row["appointment_date"] as? String else {
+                        print("Row parsing failed: \(row)")
+                        return nil
+                    }
+
+                    let description = row["description"] as? String ?? ""
                     return Appointment(
                         id: id,
                         petId: petId,
@@ -71,6 +77,7 @@ struct AppointmentView: View {
             }
         }
     }
+
 
 
 

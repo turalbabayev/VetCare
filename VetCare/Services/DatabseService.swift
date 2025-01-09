@@ -5,12 +5,12 @@ class DatabaseService {
 
     init() {
         configuration = PostgresClientKit.ConnectionConfiguration()
-        configuration.host = "localhost"
-        configuration.database = "vetcare"
-        configuration.user = "postgres"
-        configuration.credential = .md5Password(password: "babayev0512")
-        configuration.ssl = false // SSL bağlantısını devre dışı bırak
-
+        configuration.host = "dpg-cu02hs3v2p9s739bpgb0-a.oregon-postgres.render.com"
+        configuration.database = "vetcare_3ogy"
+        configuration.port = 5432                    // Varsayılan PostgreSQL portu
+        configuration.user = "turalbabayev"
+        configuration.credential = .md5Password(password: "Y5SYFZTPN1cdJWAbGNHZBbW9sG3ao1yC")
+        configuration.ssl = true // SSL bağlantısını devre dışı bırak
     }
 
     // Veritabanına bağlan ve sorgu çalıştır, sonuçları döndür
