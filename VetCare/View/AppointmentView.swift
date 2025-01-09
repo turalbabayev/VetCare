@@ -57,8 +57,11 @@ struct AppointmentView: View {
 
                 // Satırları işlemeye çalışmadan önce mevcut olup olmadığını kontrol edin
                 appointments = rows.compactMap { row in
-                    guard let id = row["id"] as? Int,
-                          let petId = row["pet_id"] as? Int,
+                    // Sütunları doğru formatta alıp almadığımızı kontrol ediyoruz
+                    guard let idString = row["id"],
+                          let id = Int("\(idString)"),
+                          let petIdString = row["pet_id"],
+                          let petId = Int("\(petIdString)"),
                           let appointmentDate = row["appointment_date"] as? String else {
                         print("Row parsing failed: \(row)")
                         return nil
@@ -77,6 +80,7 @@ struct AppointmentView: View {
             }
         }
     }
+
 
 
 

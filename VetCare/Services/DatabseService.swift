@@ -2,6 +2,8 @@ import PostgresClientKit
 
 class DatabaseService {
     private var configuration: PostgresClientKit.ConnectionConfiguration
+    var results: [[String: Any]] = []
+
 
     init() {
         configuration = PostgresClientKit.ConnectionConfiguration()
@@ -33,24 +35,38 @@ class DatabaseService {
             print("Executing query...")
             let cursor = try statement.execute()
             print("Query executed successfully.")
-            
+
+            // Sonuçları saklayacak dizi
             var results: [[String: Any]] = []
 
-            // Sütun isimlerini alıyoruz
-            print("Extracting column names...")
-            let columnNames = statement.description.split(separator: " ").dropFirst().map(String.init)
-            print("Column names: \(columnNames)")
+            // Sütun adlarını manuel belirliyoruz
+            let columnNames = ["id", "pet_id", "appointment_date", "description"] // Elle belirlenmiş
+            print("Using column names: \(columnNames)")
 
+            // Satırları işle
             for row in cursor {
-                let columns = try row.get().columns
-                var rowDict: [String: Any] = [:]
+                do {
+                    let columns = try row.get().columns
+                    print("Row columns: \(columns)")
 
-                for (index, column) in columns.enumerated() {
-                    let columnName = columnNames[index]
-                    rowDict[columnName] = column
+                    var rowDict: [String: Any] = [:]
+
+                    for (index, column) in columns.enumerated() {
+                        guard index < columnNames.count else {
+                            print("Index \(index) out of range for column names.")
+                            continue
+                        }
+
+                        let columnName = columnNames[index]
+                        rowDict[columnName] = column
+                        print("Mapping \(columnName): \(column)")
+                    }
+
+                    print("Row Dict: \(rowDict)")
+                    results.append(rowDict) // Sonuçlar dizisine ekle
+                } catch {
+                    print("Error processing row: \(error)")
                 }
-
-                results.append(rowDict)
             }
 
             print("Query results: \(results)")
@@ -60,6 +76,7 @@ class DatabaseService {
             throw error
         }
     }
+
 
     // Evcil hayvanları listele (örnek SELECT)
     func listPets() {
